@@ -1,65 +1,39 @@
 import pygame
 from constants import *
+from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
+
 
 def main():
-    print("Starting Asteroids!")
-    print(f"Screen width: {SCREEN_WIDTH}")
-    print(f"Screen height: {SCREEN_HEIGHT}")
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    clock = pygame.time.Clock()
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    asteroids = pygame.sprite.Group()
+    Player.containers = (updatable, drawable)
+    Asteroid.containers = (asteroids, updatable, drawable)
+    AsteroidField.containers = (updatable)
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+    dt = 0
 
-# pygame setup
-pygame.init()
-screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-clock = pygame.time.Clock()
-running = True
-dt = 0
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                return
 
-# sets player position to be on the middle of the screen
-player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-player_img = pygame.image.load("player_img.png")
-player_color = (0, 128, 255) # Blue
-# polygon_shape = [(-20, -20), (20, -20), (0, 30)] # Example triangle
+        screen.fill("black")
+        updatable.update(dt)
 
+        for object in drawable:
+            object.draw(screen)
 
-while running:
-# poll for events
-# pygame.QUIT event means the user clicked X to close your WindowsError
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        pygame.display.flip()
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("black")
+        # limit the framerate to 60 FPS
+        dt = clock.tick(60) / 1000
 
-    # RENDER YOUR GAME HERE
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player_pos.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player_pos.y += 300 * dt
-    if keys[pygame.K_a]:
-        player_pos.x -= 300 * dt
-    if keys[pygame.K_d]:
-        player_pos.x += 300 * dt
-
-
-    dt = clock.tick(60) / 1000 # limits fps to 60 and splits into miliseconds
-
-    # if player_pos.x >= 1260:
-    #     player_pos.x = 1260
-    # if player_pos.x <= 20:
-    #     player_pos.x = 20
-    # if player_pos.y >= 700:
-    #     player_pos.y = 700
-    # if player_pos.y <= 20:
-    #     player_pos.y = 20
-
-    # draw to player
-    pygame.draw.circle(screen, player_color, player_pos, 40)
-
-    # flip() the display to put your work on screen
-    pygame.display.flip()
-
-pygame.quit()
 
 if __name__ == "__main__":
     main()
