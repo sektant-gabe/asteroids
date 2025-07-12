@@ -32,8 +32,9 @@ def main():
 
         for asteroid_obj in asteroids:
             if player.isColliding(asteroid_obj):
-                print('Game over!')
-                return
+                print('\nGame over!')
+                print('Restarting...')
+                main()
             for shot in shots:
                 if shot.isColliding(asteroid_obj):
                     asteroid_obj.split()
