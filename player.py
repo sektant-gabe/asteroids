@@ -6,12 +6,10 @@ from shot import Shot
 
 class Player(CircleShape):
     def __init__(self, x, y):
-        super().__init__(x, y, PLAYER_RADIUS)
+        super().__init__(x, y, PLAYER_RADIUS, PLAYER_HP)
         self.rotation = 0
         self.image = pygame.image.load(PLAYER_IMG_PATH).convert()
-        self.shot_timer = 0
-        self.damage_timer = 0
-        self.hp = PLAYER_HP
+
         self.is_dead = False
 
     def draw(self, screem):
