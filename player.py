@@ -6,11 +6,10 @@ from shot import Shot
 
 class Player(CircleShape):
     def __init__(self, x, y):
-        super().__init__(x, y, PLAYER_RADIUS, PLAYER_HP)
+        super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
-        self.image = pygame.image.load(PLAYER_IMG_PATH).convert()
-
         self.is_dead = False
+        self.hp = PLAYER_HP
 
     def draw(self, screem):
         if self.damage_timer > 0:
@@ -44,6 +43,15 @@ class Player(CircleShape):
             keys = pygame.key.get_pressed()
             self.shot_timer -= digital_timer
             self.damage_timer -= digital_timer
+
+            if self.position.x > SCREEN_WIDTH + self.radius:
+                    self.position.x = 0 - self.radius
+            if self.position.x < 0 - self.radius:
+                    self.position.x = SCREEN_WIDTH + self.radius
+            if self.position.y > SCREEN_HEIGHT + self.radius:
+                    self.position.y = 0 - self.radius
+            if self.position.y < 0 - self.radius:
+                    self.position.y = SCREEN_HEIGHT + self.radius
 
             if keys[pygame.K_a]:
                 self.rotate(digital_timer * -1)

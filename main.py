@@ -1,4 +1,5 @@
 import pygame
+import sys
 from constants import *
 from player import Player
 from asteroid import Asteroid
@@ -25,7 +26,8 @@ def main():
     while not player.is_dead:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                pygame.quit()
+                sys.exit()
 
         screen.fill(SCREEN_BACKGROUND_COLOR)
         updatable.update(digital_timer)
