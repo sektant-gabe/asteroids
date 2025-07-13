@@ -31,11 +31,11 @@ def main():
         updatable.update(digital_timer)
 
         for asteroid in asteroids:
-            if player.isColliding(asteroid):
+            if player.is_colliding(asteroid):
                 player.take_damage(ASTEROID_DMG)
 
             for shot in shots:
-                if shot.isColliding(asteroid):
+                if shot.is_colliding(asteroid):
                     asteroid.split()
                     shot.kill()
 
