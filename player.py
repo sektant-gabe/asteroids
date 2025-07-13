@@ -8,11 +8,18 @@ class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
-        self.image = pygame.image.load('player_img.png').convert()
-        self.timer = 0
+        self.image = pygame.image.load(PLAYER_IMG_PATH).convert()
+        self.shot_timer = 0
+        self.damage_timer = 0
+        self.hp = PLAYER_HP
+        self.is_dead = False
 
     def draw(self, screem):
-        pygame.draw.polygon(screem, "white", self.triangle(), 2)
+        if self.damage_timer > 0:
+            pygame.draw.polygon(screem, PLAYER_DMG_COOLDOWN_COLOR, self.triangle(), PLAYER_WIDTH)
+        else:
+            pygame.draw.polygon(screem, PLAYER_COLOR, self.triangle(), PLAYER_WIDTH)
+
 
     def triangle(self):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
@@ -22,31 +29,42 @@ class Player(CircleShape):
         c = self.position - forward * self.radius + right
         return [a, b, c]
 
-    def rotate(self, dt):
-        self.rotation += PLAYER_TURN_SPEED * dt
+    def rotate(self, digital_timer):
+        self.rotation += PLAYER_TURN_SPEED * digital_timer
 
-    def update(self, dt):
+    def take_damage(self, damage):
+        if not self.damage_timer > 0:
+            print(f"\n...you took {damage} DMG...")
+            self.hp -= damage
+            print(f"...you now have {self.hp} HP remaining...")
+            if self.hp <= 0:
+                print('\nYou are dead!!!')
+                self.is_dead = True
+            self.damage_timer = PLAYER_DMG_COOLDOWN
+
+    def update(self, digital_timer):
             keys = pygame.key.get_pressed()
-            self.timer -= dt
+            self.shot_timer -= digital_timer
+            self.damage_timer -= digital_timer
 
             if keys[pygame.K_a]:
-                self.rotate(dt * -1)
+                self.rotate(digital_timer * -1)
             if keys[pygame.K_d]:
-                self.rotate(dt)
+                self.rotate(digital_timer)
             if keys[pygame.K_s]:
-                self.move(dt * -1)
+                self.move(digital_timer * -1)
             if keys[pygame.K_w]:
-                self.move(dt)
+                self.move(digital_timer)
             if keys[pygame.K_j]:
                 self.shoot()
 
-    def move(self, dt):
+    def move(self, digital_timer):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.position += forward * PLAYER_SPEED * dt
+        self.position += forward * PLAYER_SPEED * digital_timer
 
     def shoot(self):
-        if not self.timer > 0:
+        if not self.shot_timer > 0:
             shot = Shot(self.position[0], self.position[1])
             shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation)
             shot.velocity *=  PLAYER_SHOOT_SPEED
-            self.timer = PLAYER_SHOOT_COOLDOWN
+            self.shot_timer = PLAYER_SHOOT_COOLDOWN

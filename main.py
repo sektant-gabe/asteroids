@@ -20,24 +20,23 @@ def main():
 
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     asteroidfield = AsteroidField()
-    dt = 0
+    digital_timer = 0
 
-    while True:
+    while not player.is_dead:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
 
-        screen.fill("black")
-        updatable.update(dt)
+        screen.fill(SCREEN_BACKGROUND_COLOR)
+        updatable.update(digital_timer)
 
-        for asteroid_obj in asteroids:
-            if player.isColliding(asteroid_obj):
-                print('\nGame over!')
-                print('Restarting...')
-                main()
+        for asteroid in asteroids:
+            if player.isColliding(asteroid):
+                player.take_damage(ASTEROID_DMG)
+
             for shot in shots:
-                if shot.isColliding(asteroid_obj):
-                    asteroid_obj.split()
+                if shot.isColliding(asteroid):
+                    asteroid.split()
                     shot.kill()
 
         for object in drawable:
@@ -46,7 +45,7 @@ def main():
         pygame.display.flip()
 
         # limit the framerate to 60 FPS
-        dt = clock.tick(60) / 1000
+        digital_timer = clock.tick(DIGITAL_TIMER) / 1000
 
 
 if __name__ == "__main__":
