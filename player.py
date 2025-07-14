@@ -40,10 +40,18 @@ class Player(CircleShape):
             self.damage_timer = PLAYER_DMG_COOLDOWN
 
     def update(self, digital_timer):
-            keys = pygame.key.get_pressed()
+
+            # Checking State (WIP)
             self.shot_timer -= digital_timer
             self.damage_timer -= digital_timer
 
+            # Screen edges as walls
+            # if self.x + self.radius > WIDTH or self.x - self.radius < 0:
+            #     self.speed_x *= -1
+            # if self.y + self.radius > HEIGHT or self.y - self.radius < 0:
+            #     self.speed_y *= -1
+
+            # Screen edges as portals
             if self.position.x > SCREEN_WIDTH + self.radius:
                     self.position.x = 0 - self.radius
             if self.position.x < 0 - self.radius:
@@ -52,6 +60,9 @@ class Player(CircleShape):
                     self.position.y = 0 - self.radius
             if self.position.y < 0 - self.radius:
                     self.position.y = SCREEN_HEIGHT + self.radius
+
+            # Keybinds
+            keys = pygame.key.get_pressed()
 
             if keys[pygame.K_a]:
                 self.rotate(digital_timer * -1)
