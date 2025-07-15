@@ -5,17 +5,22 @@ from shot import Shot
 
 
 class Player(CircleShape):
-    def __init__(self, x, y):
+    def __init__(self, x, y, username=' '):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
-        self.is_dead = False
         self.hp = PLAYER_HP
+        self.speed = PLAYER_SPEED
+        self.score = 0
+        self.is_alive = True
+        self.is_active = False
+        self.username = username
 
     def draw(self, screem):
-        if self.damage_timer > 0:
-            pygame.draw.polygon(screem, PLAYER_DMG_COOLDOWN_COLOR, self.triangle(), PLAYER_WIDTH)
-        else:
-            pygame.draw.polygon(screem, PLAYER_COLOR, self.triangle(), PLAYER_WIDTH)
+        if self.is_active:
+            if self.damage_timer > 0:
+                pygame.draw.polygon(screem, PLAYER_DMG_COOLDOWN_COLOR, self.triangle(), PLAYER_WIDTH)
+            else:
+                pygame.draw.polygon(screem, PLAYER_COLOR, self.triangle(), PLAYER_WIDTH)
 
 
     def triangle(self):
@@ -36,19 +41,11 @@ class Player(CircleShape):
             print(f"...you now have {self.hp} HP remaining...")
             if self.hp <= 0:
                 print('\nYou are dead!!!')
-                self.is_dead = True
-            self.damage_timer = PLAYER_DMG_COOLDOWN
-
-    def update(self, digital_timer):
-
-            # Checking State (WIP)
-            self.shot_timer -= digital_timer
-            self.damage_timer -= digital_timer
-
+                runAW
             # Screen edges as walls
-            # if self.x + self.radius > WIDTH or self.x - self.radius < 0:
-            #     self.speed_x *= -1
-            # if self.y + self.radius > HEIGHT or self.y - self.radius < 0:
+            # if self.position.x + self.radius > WIDTH or self.position.x - self.radius < 0:
+            #     self. *= -1
+            # if self.position.y + self.radius > HEIGHT or self.position.y - self.radius < 0:
             #     self.speed_y *= -1
 
             # Screen edges as portals
@@ -77,7 +74,7 @@ class Player(CircleShape):
 
     def move(self, digital_timer):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)
-        self.position += forward * PLAYER_SPEED * digital_timer
+        self.position += forward * self.speed * digital_timer
 
     def shoot(self):
         if not self.shot_timer > 0:
