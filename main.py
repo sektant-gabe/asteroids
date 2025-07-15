@@ -14,7 +14,7 @@ pygame.init()
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Menu")
 
-BG = pygame.image.load(BG_IMG_PATH)
+BG = pygame.image.load(BG_IMG_PATH).convert()
 
 def get_font(size):
     return pygame.font.Font("assets/font.ttf", size)
@@ -38,7 +38,7 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
 
-        SCREEN.fill(SCREEN_BACKGROUND_COLOR)
+        SCREEN.blit(BG, (0, 0))
 
         for asteroid in asteroids:
             if player.is_colliding(asteroid):

@@ -6,7 +6,7 @@ import pygame
 # Misc constants
 SCREEN_WIDTH = 1280
 SCREEN_HEIGHT = 720
-BG_IMG_PATH = "assets/Background.png"
+BG_IMG_PATH = "assets/bg.png"
 SCREEN_BACKGROUND_COLOR = "black"
 TEXT_UI_PRIMARY_COLOR = (255, 255, 255)
 MENU_H1_COLOR = '#b68f40'
@@ -19,10 +19,7 @@ MENU_BG_COLOR = (0, 0, 0)
 DIGITAL_TIMER = 60
 BUTTON_BASE_COLOR = "#d7fcd4"
 BUTTON_HOVERING_COLOR = (255, 255 ,255)
-PLAY_RECT_IMG = 'assets/Play_Rect.png'
-OPTIONS_RECT_IMG = "assets/Options_Rect.png"
 OPTIONS_BG_COLOR = "black"
-QUIT_RECT_IMG = "assets/Quit_Rect.png"
 
 # Player constants
 PLAYER_HP = 5
