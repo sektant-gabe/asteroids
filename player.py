@@ -12,15 +12,12 @@ class Player(CircleShape):
         self.speed = PLAYER_SPEED
         self.score = 0
         self.is_alive = True
-        self.is_active = False
-        self.username = username
 
     def draw(self, screem):
-        if self.is_active:
-            if self.damage_timer > 0:
-                pygame.draw.polygon(screem, PLAYER_DMG_COOLDOWN_COLOR, self.triangle(), PLAYER_WIDTH)
-            else:
-                pygame.draw.polygon(screem, PLAYER_COLOR, self.triangle(), PLAYER_WIDTH)
+        if self.damage_timer > 0:
+            pygame.draw.polygon(screem, PLAYER_DMG_COOLDOWN_COLOR, self.triangle(), PLAYER_WIDTH)
+        else:
+            pygame.draw.polygon(screem, PLAYER_COLOR, self.triangle(), PLAYER_WIDTH)
 
 
     def triangle(self):
@@ -41,7 +38,16 @@ class Player(CircleShape):
             print(f"...you now have {self.hp} HP remaining...")
             if self.hp <= 0:
                 print('\nYou are dead!!!')
-                runAW
+                self.is_alive = False
+            self.damage_timer = PLAYER_DMG_COOLDOWN
+
+
+
+    def update(self, digital_timer):
+            keys = pygame.key.get_pressed()
+            self.shot_timer -= digital_timer
+            self.damage_timer -= digital_timer
+
             # Screen edges as walls
             # if self.position.x + self.radius > WIDTH or self.position.x - self.radius < 0:
             #     self. *= -1
@@ -71,6 +77,7 @@ class Player(CircleShape):
                 self.move(digital_timer)
             if keys[pygame.K_j]:
                 self.shoot()
+
 
     def move(self, digital_timer):
         forward = pygame.Vector2(0, 1).rotate(self.rotation)

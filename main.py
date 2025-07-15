@@ -15,10 +15,6 @@ game_font = pygame.font.SysFont(UI_FONT, UI_FONT_SIZE)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 clock = pygame.time.Clock()
 
-MANAGER = pygame_gui.UIManager(SCREEN_WIDTH, SCREEN_HEIGHT)
-
-TEXT_INPUT = pygame_gui.elements.UITextEntryLine(relative_rect=pygame.Rect((350, 275), (900, 50)), manager=MANAGER, object_id="#main_text_entry")
-
 def get_username():
     while True:
         digital_timer = clock.tick(DIGITAL_TIMER) / 1000
@@ -48,26 +44,17 @@ def main():
     AsteroidField.containers = (updatable)
     Shot.containers = (shots, updatable, drawable)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    main_menu = Menu((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 200, "Whats your nickname?")
-    nickname = Menu((SCREEN_WIDTH / 2) - 200, (SCREEN_HEIGHT / 2) - 160, username)
+    main_menu = Menu()
     digital_timer = 0
-    run = True
+    asteroidfield = AsteroidField()
 
-    while run:
+
+    while player.is_alive:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_BACKSPACE:
-                    username = username[:-1]
-                if event.key == pygame.K_RETURN:
-                    main_menu.is_active = False
-                    player.is_active = True
-                    asteroidfield = AsteroidField()
-                else:
-                    username += event.unicode.upper()
 
         screen.fill(SCREEN_BACKGROUND_COLOR)
 
@@ -81,8 +68,8 @@ def main():
                     shot.kill()
                     player.score += 1
 
-            for object in drawable:
-                object.draw(screen)
+        for object in drawable:
+            object.draw(screen)
 
         updatable.update(digital_timer)
         # score = game_font.render(str(player.score), False, TEXT_UI_PRIMARY_COLOR)
