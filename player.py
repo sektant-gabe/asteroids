@@ -5,13 +5,12 @@ from shot import Shot
 
 
 class Player(CircleShape):
-    def __init__(self, x, y, username=' '):
+    def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.hp = PLAYER_HP
         self.speed = PLAYER_SPEED
         self.score = 0
-        self.is_alive = True
 
     def draw(self, screem):
         if self.damage_timer > 0:
@@ -38,7 +37,7 @@ class Player(CircleShape):
             print(f"...you now have {self.hp} HP remaining...")
             if self.hp <= 0:
                 print('\nYou are dead!!!')
-                self.is_alive = False
+                pygame.exit()
             self.damage_timer = PLAYER_DMG_COOLDOWN
 
 
