@@ -1,3 +1,5 @@
+![menu](image.png)
+
 TODO's:
 
     Add a scoring system
