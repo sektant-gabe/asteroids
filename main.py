@@ -43,6 +43,8 @@ def game_loop():
         for asteroid in asteroids:
             if player.is_colliding(asteroid):
                 player.take_damage(ASTEROID_DMG)
+                if not player.is_alive:
+                    game_over()
 
             for shot in shots:
                 if shot.is_colliding(asteroid):
@@ -66,7 +68,7 @@ def options():
     while True:
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill(OPTIONS_BG_COLOR)
+        SCREEN.blit(BG, (0, 0))
 
         OPTIONS_TEXT = get_font(UI_FONT_SIZE).render("This is the OPTIONS screen.", True, TEXT_UI_PRIMARY_COLOR)
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
@@ -97,19 +99,19 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(75).render("ASTEROID DOS CRIAS", True, MENU_H1_COLOR)
+        MENU_TEXT = get_font(95).render("ASTEROID DOS CRIAS", True, MENU_H1_COLOR)
         MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
         FOOTER_TEXT = get_font(30).render("Ento'wn Thouma Productions LTDA", True, MENU_H1_COLOR)
-        FOOTER_RECT = MENU_TEXT.get_rect(center=(735, 700))
-
-        PLAY_BUTTON = Button(image=pygame.image.load(PLAY_RECT_IMG).convert(), pos=(640, 300), text_input="PLAY", font=get_font(45), base_color=BUTTON_BASE_COLOR, hovering_color=BUTTON_HOVERING_COLOR)
-        OPTIONS_BUTTON = Button(image=pygame.image.load(OPTIONS_RECT_IMG).convert(), pos=(640, 250), text_input="OPTIONS", font=get_font(45), base_color=BUTTON_BASE_COLOR, hovering_color=BUTTON_HOVERING_COLOR)
-        QUIT_BUTTON = Button(image=pygame.image.load(QUIT_RECT_IMG).convert(), pos=(640, 450), text_input="QUIT", font=get_font(45), base_color=BUTTON_BASE_COLOR, hovering_color=BUTTON_HOVERING_COLOR)
-
+        FOOTER_RECT = MENU_TEXT.get_rect(center=(800, 700))
         SCREEN.blit(MENU_TEXT, MENU_RECT)
         SCREEN.blit(FOOTER_TEXT, FOOTER_RECT)
 
-        for button in [PLAY_BUTTON, QUIT_BUTTON]:
+        PLAY_BUTTON = Button(image=None, pos=(640, 300), text_input="PLAY", font=get_font(75), base_color="White", hovering_color="Green")
+        OPTIONS_BUTTON = Button(image=None, pos=(640, 375), text_input="OPTIONS", font=get_font(75), base_color="White", hovering_color="Blue")
+        QUIT_BUTTON = Button(image=None, pos=(640, 450), text_input="QUIT", font=get_font(75), base_color="White", hovering_color="Red")
+
+
+        for button in [PLAY_BUTTON,OPTIONS_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
 
@@ -128,18 +130,44 @@ def main_menu():
 
         pygame.display.update()
 
+def game_over():
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
+
+        SCREEN.blit(BG, (0, 0))
+
+        TEXT = get_font(85).render("GAME OVER", True, "Red")
+        RECT = TEXT.get_rect(center=(640, 170))
+        SCREEN.blit(TEXT, RECT)
+
+        BUTTON_1 = Button(image=None, pos=(640, 300), text_input="GO TO MAIN MENU", font=get_font(45), base_color="White", hovering_color="Green")
+        BUTTON_1.changeColor(MOUSE_POS)
+        BUTTON_1.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if BUTTON_1.checkForInput(MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
 def play():
     while True:
         PLAY_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        SCREEN.blit(BG, (0, 0))
 
-        PLAY_TEXT = get_font(45).render("MISSAO:\nPurificar o espaco das outras formas geometricas", True, "White")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 170))
+        TEXT = get_font(95).render("MISSAO:", True, "White")
+        RECT = TEXT.get_rect(center=(640, 110))
+        PLAY_TEXT = get_font(45).render("Purificar o espaco das outras formas geometricas", True, "White")
+        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 180))
         SCREEN.blit(PLAY_TEXT, PLAY_RECT)
 
-        PLAY_GAME = Button(image=None, pos=(640, 300), text_input="PLAY GAME", font=get_font(75), base_color="White", hovering_color="Green")
-        PLAY_BACK = Button(image=None, pos=(640, 450), text_input="BACK", font=get_font(75), base_color="White", hovering_color="Red")
+        PLAY_GAME = Button(image=None, pos=(640, 300), text_input="PLAY", font=get_font(75), base_color="White", hovering_color="Green")
+        PLAY_BACK = Button(image=None, pos=(640, 375), text_input="BACK", font=get_font(75), base_color="White", hovering_color="Red")
 
         PLAY_GAME.changeColor(PLAY_MOUSE_POS)
         PLAY_GAME.update(SCREEN)

@@ -10,6 +10,7 @@ class Player(CircleShape):
         self.rotation = 0
         self.hp = PLAYER_HP
         self.speed = PLAYER_SPEED
+        self.is_alive = True
         self.score = 0
 
     def draw(self, screem):
@@ -37,7 +38,7 @@ class Player(CircleShape):
             print(f"...you now have {self.hp} HP remaining...")
             if self.hp <= 0:
                 print('\nYou are dead!!!')
-                pygame.exit()
+                self.is_alive = False
             self.damage_timer = PLAYER_DMG_COOLDOWN
 
 
