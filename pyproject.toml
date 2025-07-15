@@ -8,4 +8,5 @@ dependencies = [
     "pygame-ce>=2.5.5",
     "pygame-gui>=0.6.14",
     "pygame-pgu>=0.21",
+    "python-lsp-server>=1.13.0",
 ]
