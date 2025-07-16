@@ -3,17 +3,32 @@
 # === Tela ===
 SCREEN_WIDTH               = 1280
 SCREEN_HEIGHT              = 720
+SCREEN_MIDDLE_X            = SCREEN_WIDTH / 2
+SCREEN_MIDDLE_Y            = SCREEN_HEIGHT / 2
+SCREEN_MIDDLE_TOP          = SCREEN_MIDDLE_Y * 0.25
+SCREEN_MIDDLE_BOTTOM       = SCREEN_MIDDLE_Y * 1.75
+SCREEN_MIDDLE_LEFT         = SCREEN_MIDDLE_X * 0.45
+SCREEN_MIDDLE_RIGHT        = SCREEN_MIDDLE_X * 1.65
 BG_IMG_PATH                = "assets/bg.png"
 SCREEN_BACKGROUND_COLOR    = "black"
 
 # === UI / Menu / Timer ===
 UI_FONT                    = 'RuneScape UF'
 UI_FONT_SIZE               = 40
+BACK_BUTTON_SIZE           = 45
+TITLE_FONT_SIZE            = 145
+FOOTER_FONT_SIZE           = 35
+H1_FONT_SIZE               = 120
+H2_FONT_SIZE               = 100
+H3_FONT_SIZE               = 80
+H4_FONT_SIZE               = 60
 UI_INPUT_WIDTH             = 400
 UI_INPUT_X                 = 50
 UI_INPUT_Y                 = 50
 TEXT_UI_PRIMARY_COLOR      = "#FAEB92"
 TITLE_COLOR                = "Purple"
+GAME_OVER_COLOR            = "Red"
+FINAL_SCORE_COLOR          = "green"
 MENU_BG_COLOR              = (0, 0, 0)
 MENU_H1_COLOR              = '#CC66DA'
 MENU_BACK_COLOR            = '#CC66DA'
