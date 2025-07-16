@@ -29,7 +29,19 @@ class Asteroid(CircleShape):
             else:
                 next_v = self.vertices[v + 1]
             this_v = self.vertices[v]
-            pygame.draw.line(screem, ASTEROID_COLOR, (self.position.x + this_v[0] * math.cos(this_v[1] * math.pi / 180), self.position.y + this_v[0] * math.sin(this_v[1] * math.pi / 180)), (self.position.x + next_v[0] * math.cos(next_v[1] * math.pi / 180), self.position.y + next_v[0] * math.sin(next_v[1] * math.pi / 180)), ASTEROID_WIDTH)
+            pygame.draw.aaline(
+                screem,
+                ASTEROID_COLOR,
+                (
+                    self.position.x + this_v[0] * math.cos(this_v[1] * math.pi / 180),
+                    self.position.y + this_v[0] * math.sin(this_v[1] * math.pi / 180)
+                ),
+                (
+                    self.position.x + next_v[0] * math.cos(next_v[1] * math.pi / 180),
+                    self.position.y + next_v[0] * math.sin(next_v[1] * math.pi / 180)
+                ),
+                ASTEROID_WIDTH
+            )
 
     def update(self, dt):
         self.velocity = pygame.Vector2(self.velocity.x * ASTEROID_ACCEL, self.velocity.y * ASTEROID_ACCEL)
@@ -42,8 +54,6 @@ class Asteroid(CircleShape):
                 self.position.y = 0 - self.radius
         if self.position.y < 0 - self.radius:
                 self.position.y = SCREEN_HEIGHT + self.radius
-
-
 
     def split(self):
         self.kill()

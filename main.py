@@ -10,86 +10,23 @@ from button import Button
 from menu import Menu
 
 pygame.init()
+pygame.font.init()
 
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+CLOCK = pygame.time.Clock()
+MOUSE_POS = pygame.mouse.get_pos()
 pygame.display.set_caption("Menu")
 
 BG = pygame.image.load(BG_IMG_PATH).convert()
-
-def get_font(size):
-    return pygame.font.Font("assets/font.ttf", size)
-
-def game_loop():
-    updatable = pygame.sprite.Group()
-    drawable = pygame.sprite.Group()
-    asteroids = pygame.sprite.Group()
-    shots = pygame.sprite.Group()
-    Player.containers = (updatable, drawable)
-    Asteroid.containers = (asteroids, updatable, drawable)
-    AsteroidField.containers = (updatable)
-    Shot.containers = (shots, updatable, drawable)
-    CLOCK = pygame.time.Clock()
-    DT = 0
-    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    asteroidfield = AsteroidField()
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-        SCREEN.blit(BG, (0, 0))
-
-        for asteroid in asteroids:
-            if player.is_colliding(asteroid):
-                player.take_damage(ASTEROID_DMG)
-                if not player.is_alive:
-                    game_over()
-
-            for shot in shots:
-                if shot.is_colliding(asteroid):
-                    asteroid.split()
-                    shot.kill()
-                    player.score += 1
-
-        for object in drawable:
-            object.draw(SCREEN)
-
-        updatable.update(DT)
-        score = get_font(40).render(str(player.score), False, TEXT_UI_PRIMARY_COLOR)
-        SCREEN.blit(score, (0,0))
-
-        # limit the framerate to 60 FPS
-        DT = CLOCK.tick(60) / 1000
-        pygame.display.update()
-        pygame.display.flip()
-
-def options():
-    while True:
-        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
-
-        SCREEN.blit(BG, (0, 0))
-
-        OPTIONS_TEXT = get_font(UI_FONT_SIZE).render("This is the OPTIONS screen.", True, TEXT_UI_PRIMARY_COLOR)
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
-
-        OPTIONS_BACK = Button(image=None, pos=(640, 260),
-                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
-
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(SCREEN)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu()
-
-        pygame.display.update()
-
+UPDATABLE = pygame.sprite.Group()
+DRAWABLE = pygame.sprite.Group()
+ASTEROIDS = pygame.sprite.Group()
+SHOTS = pygame.sprite.Group()
+Player.containers = (UPDATABLE, DRAWABLE)
+Asteroid.containers = (ASTEROIDS, UPDATABLE, DRAWABLE)
+AsteroidField.containers = (UPDATABLE)
+Shot.containers = (SHOTS, UPDATABLE, DRAWABLE)
+PLAYER = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
 def main_menu():
     pygame.display.set_caption("Menu")
@@ -97,52 +34,142 @@ def main_menu():
     while True:
         SCREEN.blit(BG, (0, 0))
 
-        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(95).render("ASTEROID DOS CRIAS", True, MENU_H1_COLOR)
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
-        FOOTER_TEXT = get_font(30).render("Ento'wn Thouma Productions LTDA", True, MENU_H1_COLOR)
-        FOOTER_RECT = MENU_TEXT.get_rect(center=(800, 700))
+        MENU_TEXT = get_font(145).render("ASTEROID DOS CRIAS", True, TITLE_COLOR)
+        MENU_RECT = MENU_TEXT.get_rect(center=(640, 120))
+        FOOTER_TEXT = get_font(30).render("Ento'wn Thouma Productions LTDA", True, TEXT_UI_PRIMARY_COLOR)
+        FOOTER_RECT = FOOTER_TEXT.get_rect(center=(640, 680))
         SCREEN.blit(MENU_TEXT, MENU_RECT)
         SCREEN.blit(FOOTER_TEXT, FOOTER_RECT)
 
-        PLAY_BUTTON = Button(image=None, pos=(640, 300), text_input="PLAY", font=get_font(75), base_color="White", hovering_color="Green")
-        OPTIONS_BUTTON = Button(image=None, pos=(640, 375), text_input="OPTIONS", font=get_font(75), base_color="White", hovering_color="Blue")
-        QUIT_BUTTON = Button(image=None, pos=(640, 450), text_input="QUIT", font=get_font(75), base_color="White", hovering_color="Red")
+        PLAY_BUTTON = Button(image=None, pos=(640, 350), text_input="PLAY", font=get_font(105), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
+        LEADERBOARD_BUTTON = Button(image=None, pos=(640, 435), text_input="LEADERBOARD", font=get_font(55), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
+        QUIT_BUTTON = Button(image=None, pos=(640, 580), text_input="QUIT", font=get_font(35), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_BACK_COLOR)
 
-
-        for button in [PLAY_BUTTON,OPTIONS_BUTTON, QUIT_BUTTON]:
-            button.changeColor(MENU_MOUSE_POS)
-            button.update(SCREEN)
+        for button in [PLAY_BUTTON,LEADERBOARD_BUTTON, QUIT_BUTTON]:
+            button.update(SCREEN, MOUSE_POS)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if PLAY_BUTTON.checkForInput(MOUSE_POS):
                     play()
-                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    options()
-                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if LEADERBOARD_BUTTON.checkForInput(MOUSE_POS):
+                    leaderboard()
+                if QUIT_BUTTON.checkForInput(MOUSE_POS):
                     pygame.quit()
                     sys.exit()
 
         pygame.display.update()
 
-def game_over():
+
+
+def options():
     while True:
         MOUSE_POS = pygame.mouse.get_pos()
+        SCREEN.blit(BG, (0, 0))
+
+        OPTIONS_TEXT = get_font(UI_FONT_SIZE).render("This is the OPTIONS screen.", True, TEXT_UI_PRIMARY_COLOR)
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
+        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+
+        OPTIONS_BACK = Button(image=None, pos=(640, 260), text_input="BACK", font=get_font(75), base_color="Black", hovering_color=MENU_H1_COLOR)
+
+        OPTIONS_BACK.changeColor(MOUSE_POS)
+        OPTIONS_BACK.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if OPTIONS_BACK.checkForInput(MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
+
+def game_loop():
+    MOUSE_POS = pygame.mouse.get_pos()
+    DT = 0
+    ASTEROIDFIELD = AsteroidField()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
         SCREEN.blit(BG, (0, 0))
 
-        TEXT = get_font(85).render("GAME OVER", True, "Red")
-        RECT = TEXT.get_rect(center=(640, 170))
+        for asteroid in ASTEROIDS:
+            if PLAYER.is_colliding(asteroid):
+                PLAYER.take_damage(ASTEROID_DMG)
+                if not PLAYER.is_alive:
+                    game_over()
+
+            for shot in SHOTS:
+                if shot.is_colliding(asteroid):
+                    asteroid.split()
+                    shot.kill()
+                    PLAYER.score += 1
+
+        for object in DRAWABLE:
+            object.draw(SCREEN)
+
+        UPDATABLE.update(DT)
+        SCORE_TEXT = Button(image=None, pos=(640, 50), text_input="[ "+str(PLAYER.score)+" ]", font=get_font(35), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
+        SCORE_TEXT.update(SCREEN, MOUSE_POS)
+
+        # limit the framerate to 60 FPS
+        DT = CLOCK.tick(60) / 1000
+        pygame.display.update()
+        pygame.display.flip()
+
+
+def game_over():
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
+        SCREEN.blit(BG, (0, 0))
+
+        GAMEOVER_TEXT = get_font(85).render("YOU DIED", True, MENU_BACK_COLOR)
+        GAMEOVER_RECT = GAMEOVER_TEXT.get_rect(center=(640, 110))
+        SCREEN.blit(GAMEOVER_TEXT, GAMEOVER_RECT)
+
+        FINAL_SCORE_TEXT = get_font(65).render("Your final score is", True, TEXT_UI_PRIMARY_COLOR)
+        FINAL_SCORE_RECT = FINAL_SCORE_TEXT.get_rect(center=(640, 250))
+        SCREEN.blit(FINAL_SCORE_TEXT, FINAL_SCORE_RECT)
+
+        SCORE_COUNT_TEXT = get_font(135).render(str(PLAYER.score), True, TEXT_UI_PRIMARY_COLOR)
+        SCORE_COUNT_RECT = SCORE_COUNT_TEXT.get_rect(center=(640, 350))
+        SCREEN.blit(SCORE_COUNT_TEXT, SCORE_COUNT_RECT)
+
+        BUTTON_1 = Button(image=None, pos=(640, 580), text_input="BACK", font=get_font(45), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_BACK_COLOR)
+        BUTTON_1.update(SCREEN, MOUSE_POS)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if BUTTON_1.checkForInput(MOUSE_POS):
+                    main_menu()
+
+        pygame.display.update()
+
+def leaderboard():
+    while True:
+        MOUSE_POS = pygame.mouse.get_pos()
+        SCREEN.blit(BG, (0, 0))
+
+        TEXT = get_font(85).render("Oka's LEADERBOARD", True, TITLE_COLOR)
+        RECT = TEXT.get_rect(center=(640, 110))
         SCREEN.blit(TEXT, RECT)
 
-        BUTTON_1 = Button(image=None, pos=(640, 300), text_input="GO TO MAIN MENU", font=get_font(45), base_color="White", hovering_color="Green")
-        BUTTON_1.changeColor(MOUSE_POS)
-        BUTTON_1.update(SCREEN)
+        BUTTON_1 = Button(image=None, pos=(640, 580), text_input="BACK", font=get_font(35), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_BACK_COLOR)
+        BUTTON_1.update(SCREEN, MOUSE_POS)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -155,36 +182,48 @@ def game_over():
         pygame.display.update()
 
 def play():
+    USERNAME = ''
     while True:
-        PLAY_MOUSE_POS = pygame.mouse.get_pos()
-
+        MOUSE_POS = pygame.mouse.get_pos()
         SCREEN.blit(BG, (0, 0))
 
-        TEXT = get_font(95).render("MISSAO:", True, "White")
-        RECT = TEXT.get_rect(center=(640, 110))
-        PLAY_TEXT = get_font(45).render("Purificar o espaco das outras formas geometricas", True, "White")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 180))
-        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
+        H1 = get_font(95).render("Type your username:", True, TEXT_UI_PRIMARY_COLOR)
+        H1_RECT = H1.get_rect(center=(640, 110))
+        SCREEN.blit(H1, H1_RECT)
 
-        PLAY_GAME = Button(image=None, pos=(640, 300), text_input="PLAY", font=get_font(75), base_color="White", hovering_color="Green")
-        PLAY_BACK = Button(image=None, pos=(640, 375), text_input="BACK", font=get_font(75), base_color="White", hovering_color="Red")
+        USERNAME_TEXT = Button(image=None, pos=(640, 210), text_input="[ "+USERNAME+" ]", font=get_font(55), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=TEXT_UI_PRIMARY_COLOR)
+        USERNAME_TEXT.update(SCREEN, MOUSE_POS)
 
-        PLAY_GAME.changeColor(PLAY_MOUSE_POS)
-        PLAY_GAME.update(SCREEN)
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
+        if len(USERNAME) > 2:
+            PLAY_GAME = Button(image=None, pos=(640, 350), text_input="START", font=get_font(95), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
+            PLAY_GAME.update(SCREEN, MOUSE_POS)
+
+        PLAY_BACK = Button(image=None, pos=(640, 580), text_input="BACK", font=get_font(35), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_BACK_COLOR)
+        PLAY_BACK.update(SCREEN, MOUSE_POS)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_GAME.checkForInput(PLAY_MOUSE_POS):
+                if PLAY_GAME.checkForInput(MOUSE_POS):
+                    PLAYER.username = USERNAME
                     game_loop()
 
-                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                if PLAY_BACK.checkForInput(MOUSE_POS):
                     main_menu()
 
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    USERNAME = USERNAME[:-1]
+                else:
+                    if len(USERNAME) < 5:
+                        USERNAME += event.unicode.upper()
+
         pygame.display.update()
+
+def get_font(size):
+    return pygame.font.Font("assets/font.ttf", size)
 
 main_menu()

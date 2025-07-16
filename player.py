@@ -7,6 +7,7 @@ from shot import Shot
 class Player(CircleShape):
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
+        self.username = ''
         self.rotation = 0
         self.hp = PLAYER_HP
         self.speed = PLAYER_SPEED
