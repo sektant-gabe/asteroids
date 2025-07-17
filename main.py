@@ -7,7 +7,6 @@ from asteroid import Asteroid
 from asteroidfield import AsteroidField
 from shot import Shot
 from button import Button
-from menu import Menu
 
 pygame.init()
 pygame.font.init()
@@ -16,8 +15,6 @@ SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 CLOCK = pygame.time.Clock()
 MOUSE_POS = pygame.mouse.get_pos()
 pygame.display.set_caption("Menu")
-
-BG = pygame.image.load(BG_IMG_PATH).convert()
 UPDATABLE = pygame.sprite.Group()
 DRAWABLE = pygame.sprite.Group()
 ASTEROIDS = pygame.sprite.Group()
@@ -26,9 +23,9 @@ Player.containers = (UPDATABLE, DRAWABLE)
 Asteroid.containers = (ASTEROIDS, UPDATABLE, DRAWABLE)
 AsteroidField.containers = (UPDATABLE)
 Shot.containers = (SHOTS, UPDATABLE, DRAWABLE)
+BG = pygame.image.load(BG_IMG_PATH).convert()
 PLAYER = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-
-
+ASTEROID_SPAWNER = AsteroidField()
 
 def main_menu():
     pygame.display.set_caption("Menu")
@@ -41,9 +38,9 @@ def main_menu():
         draw_text("ASTEROID DOS CRIAS", TITLE_FONT_SIZE, TITLE_COLOR, SCREEN_MIDDLE_X, 120)
         draw_text("Ento'wn Thouma Productions LTDA", FOOTER_FONT_SIZE, TEXT_UI_PRIMARY_COLOR, SCREEN_MIDDLE_X, 680)
 
-        play_button = Button(image=None, pos=(640, 350), text_input="PLAY", font=get_font(105), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
-        leaderboard_button = Button(image=None, pos=(640, 435), text_input="LEADERBOARD", font=get_font(55), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
-        quit_button = Button(image=None, pos=(640, 580), text_input="QUIT", font=get_font(35), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_BACK_COLOR)
+        play_button = Button(image=None, pos=(SCREEN_MIDDLE_X, 350), text_input="PLAY", font=get_font(105), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
+        leaderboard_button = Button(image=None, pos=(SCREEN_MIDDLE_X, 435), text_input="LEADERBOARD", font=get_font(55), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_H1_COLOR)
+        quit_button = Button(image=None, pos=(SCREEN_MIDDLE_X, 580), text_input="QUIT", font=get_font(35), base_color=TEXT_UI_PRIMARY_COLOR, hovering_color=MENU_BACK_COLOR)
 
         for button in [play_button,leaderboard_button, quit_button]:
             button.update(SCREEN, mouse_pos)
@@ -67,14 +64,13 @@ def main_menu():
 def game_loop():
     mouse_pos = pygame.mouse.get_pos()
     dt = 0
-    asteroid_spawner = AsteroidField()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-        SCREEN.blit(BG, (0, 0))
+        SCREEN.blit(BG)
 
         for asteroid in ASTEROIDS:
             if PLAYER.is_colliding(asteroid):
@@ -133,9 +129,13 @@ def game_over():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
+                    with open("scores.txt", "a", encoding="UTF-8") as score_file:
+                        score_file.write(f"{PLAYER.username},{PLAYER.score}\n")
                     main_menu()
 
         pygame.display.update()
+
+
 
 
 def leaderboard():
@@ -213,7 +213,7 @@ def play():
                         PLAYER.username = current_username
                         game_loop()
 
-                if play_button.checkForInput(mouse_pos):
+                if back_button.checkForInput(mouse_pos):
                     main_menu()
 
             if event.type == pygame.KEYDOWN:

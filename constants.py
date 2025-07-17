@@ -39,7 +39,7 @@ SCORE_COUNT_COLOR          = ''
 DIGITAL_TIMER              = 60
 
 # === Jogador ===
-PLAYER_HP                  = 3
+PLAYER_HP: int             = 3
 PLAYER_WIDTH               = 5
 PLAYER_RADIUS              = 20
 PLAYER_SPEED               = 200
@@ -55,7 +55,7 @@ PLAYER_DMG_COOLDOWN_COLOR  = "#CC66DA"
 
 # === Asteroides ===
 ASTEROID_WIDTH                         = 5
-ASTEROID_ACCEL                         = 1.0002
+ASTEROID_ACCEL: float                  = 1.0002
 ASTEROID_DMG                           = 1
 ASTEROID_KINDS                         = 3
 ASTEROID_MIN_RADIUS                    = 20
