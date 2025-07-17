@@ -1,4 +1,4 @@
-![menu](assets/home_screenshot.png)
+![menu](image.png)
 
 TODO's:
 
