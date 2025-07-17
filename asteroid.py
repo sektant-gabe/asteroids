@@ -44,6 +44,7 @@ class Asteroid(CircleShape):
             )
 
     def update(self, dt):
+
         self.velocity = pygame.Vector2(self.velocity.x * ASTEROID_ACCEL, self.velocity.y * ASTEROID_ACCEL)
         self.position += (self.velocity * ASTEROID_ACCEL) * dt
         if self.position.x > SCREEN_WIDTH + self.radius:

@@ -62,6 +62,10 @@ def main_menu():
 
 
 def game_loop():
+    PLAYER.is_alive = True
+    PLAYER.score = 0
+    ASTEROID_SPAWNER.current_wave = 1
+    ASTEROIDS.clear(SCREEN, BG)
     mouse_pos = pygame.mouse.get_pos()
     dt = 0
     while True:
@@ -69,6 +73,9 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_z:
+                    PLAYER.is_alive = False
 
         SCREEN.blit(BG)
 
@@ -86,6 +93,9 @@ def game_loop():
 
         for drawable_object in DRAWABLE:
             drawable_object.draw(SCREEN)
+
+        if PLAYER.score == 100 * ASTEROID_SPAWNER.current_wave:
+            ASTEROID_SPAWNER.current_wave += 1
 
         UPDATABLE.update(dt)
 
@@ -122,7 +132,7 @@ def game_loop():
 def game_over():
     while True:
         mouse_pos = pygame.mouse.get_pos()
-        SCREEN.blit(BG, (0, 0))
+        SCREEN.blit(BG)
 
         draw_text("YOU DIED", H1_FONT_SIZE, GAME_OVER_COLOR, SCREEN_MIDDLE_X, SCREEN_MIDDLE_TOP)
         draw_text("Your final score is", H3_FONT_SIZE, TEXT_UI_PRIMARY_COLOR, SCREEN_MIDDLE_X, SCREEN_MIDDLE_Y - 130)
@@ -137,8 +147,9 @@ def game_over():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
-                    with open("scores.txt", "a", encoding="UTF-8") as score_file:
-                        score_file.write(f"\n{PLAYER.username},{PLAYER.score}")
+                    if PLAYER.username != "AAAAAAAA":
+                        with open("scores.txt", "a", encoding="UTF-8") as score_file:
+                            score_file.write(f"{PLAYER.username},{PLAYER.score}\n")
                     main_menu()
 
         pygame.display.update()

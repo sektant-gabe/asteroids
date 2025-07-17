@@ -10,7 +10,6 @@ wheels/
 # Virtual environments
 .venv
 /.ropeproject/
-pyproject.toml
 .python-version
 uv.lock
 scores.txt
