@@ -3,13 +3,14 @@ __pycache__/
 *.py[oc]
 build/
 dist/
+.idea
 wheels/
 *.egg-info
 .DS_Store
 # Virtual environments
 .venv
 /.ropeproject/
-!/pyproject.toml
-!/.python-version
-!/uv.lock
-!/scores.txt
+pyproject.toml
+.python-version
+uv.lock
+scores.txt
