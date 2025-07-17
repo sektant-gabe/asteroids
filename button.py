@@ -1,5 +1,13 @@
-class Button():
+import pygame.sprite
+
+
+class Button(pygame.sprite.Sprite):
+
     def __init__(self, image, pos, text_input, font, base_color, hovering_color, is_inactive=False):
+        if hasattr(self, "containers"):
+            super().__init__(self.containers)
+        else:
+            super().__init__()
         self.image = image
         self.position_x = pos[0]
         self.position_y = pos[1]

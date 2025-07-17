@@ -21,7 +21,7 @@ ASTEROIDS = pygame.sprite.Group()
 SHOTS = pygame.sprite.Group()
 Player.containers = (UPDATABLE, DRAWABLE)
 Asteroid.containers = (ASTEROIDS, UPDATABLE, DRAWABLE)
-AsteroidField.containers = (UPDATABLE)
+AsteroidField.containers = UPDATABLE
 Shot.containers = (SHOTS, UPDATABLE, DRAWABLE)
 BG = pygame.image.load(BG_IMG_PATH).convert()
 PLAYER = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
@@ -31,7 +31,7 @@ def main_menu():
     pygame.display.set_caption("Menu")
 
     while True:
-        SCREEN.blit(BG, (0, 0))
+        SCREEN.blit(BG)
 
         mouse_pos = pygame.mouse.get_pos()
 
@@ -84,8 +84,8 @@ def game_loop():
                     shot.kill()
                     PLAYER.score += 1
 
-        for object in DRAWABLE:
-            object.draw(SCREEN)
+        for drawable_object in DRAWABLE:
+            drawable_object.draw(SCREEN)
 
         UPDATABLE.update(dt)
 
@@ -105,6 +105,14 @@ def game_loop():
                                 hovering_color=MENU_H1_COLOR)
 
         player_hp_text.update(SCREEN, mouse_pos)
+
+        wave_text = Button(image=None, pos=(SCREEN_MIDDLE_X, 65),
+                                text_input="[ " + str(ASTEROID_SPAWNER.current_wave) + " ]",
+                                font=get_font(35),
+                                base_color=TEXT_UI_PRIMARY_COLOR,
+                                hovering_color=MENU_H1_COLOR)
+
+        wave_text.update(SCREEN, mouse_pos)
 
         # limit the framerate to 60 FPS
         dt = CLOCK.tick(60) / 1000
@@ -130,22 +138,32 @@ def game_over():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
                     with open("scores.txt", "a", encoding="UTF-8") as score_file:
-                        score_file.write(f"{PLAYER.username},{PLAYER.score}\n")
+                        score_file.write(f"\n{PLAYER.username},{PLAYER.score}")
                     main_menu()
 
         pygame.display.update()
 
-
-
+def load_scores_file(file_path):
+    scores = []
+    with open(file_path) as f:
+        for file_line in f:
+            name, score_str = file_line.strip().split(',')
+            scores.append([name, int(score_str)])
+    scores.sort(key=lambda run: run[1], reverse=True)
+    for i, (name, score) in enumerate(scores[:MAX_SCORES_DISPLAY]):
+        y = 230 + SPACE_BETWEEN_SCORES * i
+        draw_text(name, H4_FONT_SIZE - 5, SCORE_NAME_COLOR, SCREEN_MIDDLE_LEFT, y)
+        draw_text(str(score), H4_FONT_SIZE - 5, SCORE_NAME_COLOR, SCREEN_MIDDLE_RIGHT, y)
 
 def leaderboard():
     while True:
         mouse_pos = pygame.mouse.get_pos()
         SCREEN.blit(BG)
 
-        draw_text("Oka's Leaderboard", H1_FONT_SIZE, TEXT_UI_PRIMARY_COLOR, SCREEN_MIDDLE_X, 110)
-        draw_text(str(PLAYER.username), H4_FONT_SIZE, TEXT_UI_PRIMARY_COLOR, SCREEN_MIDDLE_LEFT, 230)
-        draw_text(str(PLAYER.score), H4_FONT_SIZE, TEXT_UI_PRIMARY_COLOR, SCREEN_MIDDLE_RIGHT, 230)
+
+        draw_text("Oka's Leaderboard", H1_FONT_SIZE, TEXT_UI_PRIMARY_COLOR, SCREEN_MIDDLE_X + 20, 110)
+
+        load_scores_file(SCORES_FILE_PATH)
 
         back_button = Button(
                              image=None,
@@ -220,7 +238,7 @@ def play():
                 if event.key == pygame.K_BACKSPACE:
                     current_username = current_username[:-1]
                 else:
-                    if len(current_username) < 5:
+                    if len(current_username) < 8:
                         current_username += event.unicode.upper()
 
         pygame.display.update()

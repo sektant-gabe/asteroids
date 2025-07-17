@@ -15,6 +15,10 @@ SCREEN_BACKGROUND_COLOR    = "black"
 # === UI / Menu / Timer ===
 UI_FONT                    = 'RuneScape UF'
 UI_FONT_SIZE               = 40
+SPACE_BETWEEN_SCORES       = 45
+MAX_SCORES_DISPLAY         = 8
+SCORES_FILE_PATH           = "scores.txt"
+SCORE_NAME_COLOR           = "#FAEB92"
 BACK_BUTTON_SIZE           = 45
 TITLE_FONT_SIZE            = 145
 FOOTER_FONT_SIZE           = 35
