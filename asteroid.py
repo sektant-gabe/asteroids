@@ -59,7 +59,7 @@ class Asteroid(CircleShape):
     def split(self):
         self.kill()
         if self.radius <= ASTEROID_MIN_RADIUS:
-            return
+            return False
         random_angle = random.uniform(ASTEROID_MIN_SPLIT_ANGLE, ASTEROID_MAX_SPLIT_ANGLE)
         new_angle = self.velocity.rotate(random_angle)
         new_neg_angle = self.velocity.rotate(random_angle * -1)

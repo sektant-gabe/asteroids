@@ -11,6 +11,15 @@ SCREEN_MIDDLE_LEFT         = SCREEN_MIDDLE_X * 0.45
 SCREEN_MIDDLE_RIGHT        = SCREEN_MIDDLE_X * 1.65
 BG_IMG_PATH                = "assets/bg.png"
 SCREEN_BACKGROUND_COLOR    = "black"
+HIT1_SOUND                 = 'assets/hit3.wav'
+HIT2_SOUND                 = 'assets/hit2.wav'
+HIT3_SOUND                 = 'assets/hit3.wav'
+HIT4_SOUND                 = 'assets/hit4.wav'
+TYPE_SOUND                 = 'assets/hit4.wav'
+UI_HOVER_SOUND             = 'assets/hit3.wav'
+UI_CLICK_SOUND             = 'assets/hit2.wav'
+ASTEROID_SPLIT_SOUND       = 'assets/asteroid_split.wav'
+ASTEROID_DEATH_SOUND       = 'assets/type.wav'
 
 # === UI / Menu / Timer ===
 UI_FONT                    = 'RuneScape UF'

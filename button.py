@@ -1,5 +1,5 @@
-import pygame.sprite
-
+import pygame
+from constants import *
 
 class Button(pygame.sprite.Sprite):
 

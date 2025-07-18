@@ -12,6 +12,14 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
+asteroid_death_sound = pygame.mixer.Sound(ASTEROID_DEATH_SOUND)
+asteroid_death_sound.set_volume(0.25)
+button_click_sound = pygame.mixer.Sound(UI_CLICK_SOUND)
+type_sound = pygame.mixer.Sound(TYPE_SOUND)
+delete_sound = pygame.mixer.Sound(HIT2_SOUND)
+player_shot_sound = pygame.mixer.Sound(HIT1_SOUND)
+player_shot_sound.set_volume(0.4)
+
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 CLOCK = pygame.time.Clock()
 MOUSE_POS = pygame.mouse.get_pos()
@@ -52,10 +60,13 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.checkForInput(mouse_pos):
+                    button_click_sound.play()
                     play()
                 if leaderboard_button.checkForInput(mouse_pos):
+                    button_click_sound.play()
                     leaderboard()
                 if quit_button.checkForInput(mouse_pos):
+                    button_click_sound.play()
                     pygame.quit()
                     sys.exit()
 
@@ -63,10 +74,6 @@ def main_menu():
 
 
 def game_loop():
-    PLAYER.is_alive = True
-    PLAYER.score = 0
-    ASTEROID_SPAWNER.current_wave = 1
-    ASTEROIDS.clear(SCREEN, BG)
     mouse_pos = pygame.mouse.get_pos()
     dt = 0
     while True:
@@ -74,9 +81,6 @@ def game_loop():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_z:
-                    PLAYER.is_alive = False
 
         SCREEN.blit(BG)
 
@@ -89,6 +93,7 @@ def game_loop():
             for shot in SHOTS:
                 if shot.is_colliding(asteroid):
                     asteroid.split()
+                    asteroid_death_sound.play()
                     shot.kill()
                     PLAYER.score += 1
 
@@ -148,6 +153,7 @@ def game_over():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
+                    button_click_sound.play()
                     if PLAYER.username != "AAA":
                         with open("scores.txt", "a", encoding="UTF-8") as score_file:
                             score_file.write(f"{PLAYER.username},{PLAYER.score}\n")
@@ -194,6 +200,7 @@ def leaderboard():
                 sys.exit()
             if leaderboard_event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
+                    button_click_sound.play()
                     main_menu()
 
         pygame.display.update()
@@ -211,8 +218,8 @@ def play():
                                text_input="[ "+current_username+" ]",
                                font=get_font(55),
                                base_color=TEXT_UI_PRIMARY_COLOR,
-                               hovering_color=TEXT_UI_PRIMARY_COLOR
-                               )
+                               hovering_color=TEXT_UI_PRIMARY_COLOR)
+
         username_text.update(SCREEN, mouse_pos)
 
 
@@ -241,17 +248,22 @@ def play():
                 if len(current_username) > 2 and play_button is not None:
                     if play_button.checkForInput(mouse_pos):
                         PLAYER.username = current_username
+                        button_click_sound.play()
                         game_loop()
 
                 if back_button.checkForInput(mouse_pos):
+                    button_click_sound.play()
                     main_menu()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     current_username = current_username[:-1]
+                    delete_sound.play()
+
                 else:
                     if len(current_username) < 8:
                         current_username += event.unicode.upper()
+                        type_sound.play()
 
         pygame.display.update()
 

@@ -13,6 +13,9 @@ class Player(CircleShape):
         self.speed = PLAYER_SPEED
         self.is_alive = True
         self.score = 0
+        self.shot_sound = pygame.mixer.Sound(HIT1_SOUND)
+        self.shot_sound.set_volume(0.4)
+
 
     def draw(self, screem):
         if self.damage_timer > 0:
@@ -90,3 +93,4 @@ class Player(CircleShape):
             shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation)
             shot.velocity *=  PLAYER_SHOOT_SPEED
             self.shot_timer = PLAYER_SHOOT_COOLDOWN
+            self.shot_sound.play()
