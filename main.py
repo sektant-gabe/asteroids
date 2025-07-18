@@ -10,6 +10,7 @@ from button import Button
 
 pygame.init()
 pygame.font.init()
+pygame.mixer.init()
 
 SCREEN = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 CLOCK = pygame.time.Clock()
@@ -147,7 +148,7 @@ def game_over():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if back_button.checkForInput(mouse_pos):
-                    if PLAYER.username != "AAAAAAAA":
+                    if PLAYER.username != "AAA":
                         with open("scores.txt", "a", encoding="UTF-8") as score_file:
                             score_file.write(f"{PLAYER.username},{PLAYER.score}\n")
                     main_menu()
